@@ -44,6 +44,7 @@ public class Main {
         //3-1. 출력 첫줄 : 총 단지 수, 둘째줄 : 단지별 집 수
         //4. 단지별로 출력을 오름차순으로 출력
         //5. count=1로 시작 : 시작점도 단지에 포함되므로 1로 초기화
+        //6. 유기농 배추 1012문제처럼 그룹별 개수 뿐만아니라 그룹수(집 수)까지 구해야함 -> bfs내부 count 적용
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         graph = new ArrayList<>();
