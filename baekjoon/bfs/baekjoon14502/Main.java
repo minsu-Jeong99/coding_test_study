@@ -3,11 +3,12 @@ import java.io.*;
 import java.util.*;
 
 public class Main{
-    static int n,m,count=0;
+    static int n,m;
     static int[][] map;
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
     static boolean[][] visited;
+    static ArrayList<Integer> safe = new ArrayList<>();
 
     static void bfs(int[][] wall){
         Queue<int[]> queue = new LinkedList<>();
@@ -27,8 +28,25 @@ public class Main{
                 int nx = c[0] +dx[i];
                 int ny = c[1]+ dy[i];
                 
+                // ★ wall[nx][ny] == 0 체크로 visited 없이도 가능하지만, 둘 다 써도 OK
+                if(nx>=0 && nx <n && ny >=0 && ny<m && visited[nx][ny] == false && wall[nx][ny] == 0){
+                    visited[nx][ny] = true;
+                    queue.offer(new int[]{nx,ny});
+                    wall[nx][ny]=2;
+                }
             }
         }
+
+        // ★ 감염 수가 아니라, BFS 끝난 후 남은 0의 개수를 세야 함
+        // 0인 칸이 안전 영역이므로, BFS 끝난 후 wall 배열에서 0의 개수 세기
+        int count=0;
+        for(int x=0;x<n;x++){
+            for(int y=0;y<m;y++){
+                if(wall[x][y]==0)
+                    count++;
+            }
+        }
+        safe.add(count);
     }
     //1. 입력 첫 줄 : 연구소 크기 N, M
     //2. 0은 빈칸, 1은 벽, 2는 바이러스
@@ -58,6 +76,7 @@ public class Main{
             }
         }
 
+        // ★ 빈 칸(0)을 리스트로 모아두면 3중 for문으로 조합을 깔끔하게 구성 가능
         List<int[]> blank = new ArrayList<>();
         // 1. 0 빈 칸 수집
         for(int i=0;i<n;i++){
@@ -69,6 +88,7 @@ public class Main{
         }
 
         // 2. 3개 조합 선택 → 벽 세우기 → BFS → 세기
+        // ★ 핵심: 벽 3개를 전부 시도 (브루트포스), j=i+1, k=j+1로 중복 없는 조합
         for(int i=0;i<blank.size();i++){
             for(int j=i+1;j<blank.size();j++){
                 for(int k=j+1;k<blank.size();k++){
@@ -86,5 +106,7 @@ public class Main{
                 }
             }
         }
+        Collections.sort(safe, Collections.reverseOrder());
+        System.out.println(safe.get(0));
     }
 }
